@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+
+  "name": "LinksDiary",
+  "description": "Collect interesting links during a day and share all of them at end of the day",
+  "version": "1.0",
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png" 
+  },
+
+  "browser_action": {
+    "default_icon": "icon16.png"
+  },
+
+ "background": {
+    "scripts": ["popup.js"]
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus"
+  ]
+}
