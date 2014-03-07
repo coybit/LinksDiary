@@ -4,6 +4,12 @@ function addClickHandler(e) {
     });
 }
 
+function shareClickHandler(e) {
+    chrome.extension.sendMessage({directive: "popup-shareButton-click"}, function(response) {
+        this.close(); // close the popup when the background finishes processing request
+    });
+}
+
 function clearClickHandler(e) {
     chrome.extension.sendMessage({directive: "popup-clearButton-click"}, function(response) {
         this.close(); // close the popup when the background finishes processing request
@@ -12,9 +18,8 @@ function clearClickHandler(e) {
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addButton').addEventListener('click', addClickHandler);
+    document.getElementById('shareButton').addEventListener('click', shareClickHandler);
     document.getElementById('clearButton').addEventListener('click', clearClickHandler);
-
-    document.body.addEventListener('focus', clearClickHandler);
 
     chrome.extension.sendMessage({directive: "popup-open"}, function(response) {});
 })

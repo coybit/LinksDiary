@@ -18,7 +18,7 @@ var LinkDiary = function() {
         date: (new Date()).toDateString(),
         title: activeTab.title,
         url: activeTab.url,
-        description: getPopupView().getDescription(),
+        description: getView('popup.html').getDescription(),
         favIcon: activeTab.favIcon
       };
      
@@ -40,12 +40,13 @@ var LinkDiary = function() {
     chrome.storage.sync.remove('linkDiaryQueue');
   }
 
-  this.shareIt = function() {
+
+  function generateLinksList( encodeForEmail, callback ) {
     chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
       var queue = results.linkDiaryQueue || [];
       var body = '';
-      var nl = '%0D%0A';
+      var nl = encodeForEmail ? '%0D%0A' : '<br>';
 
       for( var i=0; i<queue.length; i++ ){
 
@@ -55,29 +56,59 @@ var LinkDiary = function() {
         var description = queue[i].description;
     
     	var head = encodeURIComponent((i+1) + ') ' + title + ' (' + date + ' )');
-    	var moreInfo = description + nl + encodeURIComponent(url);
+    	var moreInfo = description + nl + ( encodeForEmail ? encodeURIComponent(url) : url );
     
         body += head + nl + moreInfo + nl + nl
       }
 
-      var email = [
-      'mailto:email@echoecho.com?',
-      'subject=LinksDiary - ' + (new Date()).toDateString(),
-      '&body='+ body
-      ].join('');
-      window.open(email,'_newtab');
+      callback( body );
+
+    });
+  }
+
+  this.shareIt = function() {
+    chrome.storage.sync.get('linkDiaryQueue', function(results) {
+
+		generateLinksList( true, function(body) { 
+
+	      var email = [
+	      	'mailto:email@echoecho.com?',
+	      	'subject=LinksDiary - ' + (new Date()).toDateString(),
+	      	'&body=' + body
+	      ].join('');
+	      
+	      window.open(email,'_newtab');
+
+		})
 
     });
   }
 
   this.fillPopupInfo = function() {
   	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
-			getPopupView().setTitle(arrayOfTabs[0].title);
+		getView('popup.html').setTitle(arrayOfTabs[0].title);
 	});
   }
 
-  function getPopupView() {
-    var popupView = chrome.extension.getURL('popup.html');
+	this.fillPanelInfo = function() {
+  	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+		
+  		generateLinksList( false, function(body) {
+
+			getView('panel.html').setListBody( decodeURIComponent( body ) );
+		
+		});
+
+	});
+  }
+
+  this.openPanel = function() {
+  	var panelURL = chrome.extension.getURL('panel.html');
+  	chrome.tabs.create( { url : panelURL}  );
+  }
+
+  function getView(viewFilename) {
+    var popupView = chrome.extension.getURL(viewFilename);
 	var views = chrome.extension.getViews();
 
 	for (var i = 0; i < views.length; i++) {
@@ -125,12 +156,20 @@ document.addEventListener('DOMContentLoaded', function () {});
 chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
         switch (request.directive) {
+        case "panel-open":
+            linkDiary.fillPanelInfo();
+            sendResponse({}); // sending back empty response to sender
+            break;
         case "popup-open":
             linkDiary.fillPopupInfo();
             sendResponse({}); // sending back empty response to sender
             break;
         case "popup-addButton-click":
             linkDiary.putLinkInQueue();
+            sendResponse({}); // sending back empty response to sender
+            break;
+        case "popup-shareButton-click":
+            linkDiary.openPanel();
             sendResponse({}); // sending back empty response to sender
             break;
         case "popup-clearButton-click":
