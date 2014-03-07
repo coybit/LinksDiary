@@ -4,102 +4,152 @@ var linkDiaryKey = 'linkDiaryQueue';
 
 console.log('I am here!');
 
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+		hash = hash & hash; // Convert to 32bit integer
+	}
+	return hash;
+}
+
+
 var LinkDiary = function() {
 
-  var storageKey = 'linkdiary';
+	var storageKey = 'linkdiary';
 
-  this.putLinkInQueue = function() {
+	this.addToQueue = function() {
 
-    chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+	// Find active tab and save it
+	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
-      var activeTab = arrayOfTabs[0];
-      
-      var tab = {
-        date: (new Date()).toDateString(),
-        title: activeTab.title,
-        url: activeTab.url,
-        description: getView('popup.html').getDescription(),
-        favIcon: activeTab.favIcon
-      };
-     
-     saveWebPage(tab);
+		var activeTab = arrayOfTabs[0];
 
-    });
-  }
+		var tab = {
+			date: (new Date()).toDateString(),
+			title: activeTab.title,
+			url: activeTab.url,
+			description: getView('popup.html').getDescription(),
+			favIcon: activeTab.favIcon,
+			hashedURL: activeTab.url.hashCode()
+		};
 
-  this.initBadgetText = function() {
-    chrome.storage.sync.get('linkDiaryQueue', function(results) {
-      var queue = results.linkDiaryQueue || [];
-      chrome.browserAction.setBadgeText({'text':queue.length.toString()});
-    });
-  }
+		saveWebPage(tab);
 
-  this.clear = function() {
+	});
+}
+
+this.initBadgetText = function() {
+
+	chrome.storage.sync.get('linkDiaryQueue', function(results) {
+
+		var queue = results.linkDiaryQueue || [];
+		chrome.browserAction.setBadgeText({'text':queue.length.toString()});
+
+	});
+}
+
+this.clearQueue = function() {
     // Clear queue
     chrome.browserAction.setBadgeText({'text':'0'});
     chrome.storage.sync.remove('linkDiaryQueue');
-  }
+}
 
+this.removeFromQueue = function(linkHashCode) {
 
-  function generateLinksList( encodeForEmail, callback ) {
-    chrome.storage.sync.get('linkDiaryQueue', function(results) {
+	chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
-      var queue = results.linkDiaryQueue || [];
-      var body = '';
-      var nl = encodeForEmail ? '%0D%0A' : '<br>';
+  		var queue = results.linkDiaryQueue || [];
+  		var newQueue = [];
 
-      for( var i=0; i<queue.length; i++ ){
+        // Check wheter it is new or not
+        for( var i=0; i<queue.length; i++ ) {
 
-        var title = queue[i].title;
-        var date = queue[i].date;
-        var url = queue[i].url;
-        var description = queue[i].description;
-    
-    	var head = encodeURIComponent((i+1) + ') ' + title + ' (' + date + ' )');
-    	var moreInfo = description + nl + ( encodeForEmail ? encodeURIComponent(url) : url );
-    
-        body += head + nl + moreInfo + nl + nl
-      }
+        	console.log(i,queue[i].hashedURL, linkHashCode);
 
-      callback( body );
+        	if( queue[i].hashedURL != linkHashCode )
+        		newQueue.push( queue[i] );
+        }
 
+        // Increase badge number
+        chrome.browserAction.setBadgeText({'text':newQueue.length.toString()});
+
+        // Save web page in queue
+        chrome.storage.sync.set({'linkDiaryQueue':newQueue});
     });
-  }
+}
 
-  this.shareIt = function() {
-    chrome.storage.sync.get('linkDiaryQueue', function(results) {
+function generateLinksList( encodeForEmail, callback ) {
+	chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
-		generateLinksList( true, function(body) { 
+		var queue = results.linkDiaryQueue || [];
+		var body = '';
+		var nl = encodeForEmail ? '%0D%0A' : '<br>';
 
-	      var email = [
-	      	'mailto:email@echoecho.com?',
-	      	'subject=LinksDiary - ' + (new Date()).toDateString(),
-	      	'&body=' + body
-	      ].join('');
-	      
-	      window.open(email,'_newtab');
+		for( var i=0; i<queue.length; i++ ){
 
-		})
+			var title = queue[i].title;
+			var date = queue[i].date;
+			var url = queue[i].url;
+			var description = queue[i].description;
 
-    });
+			var head = encodeURIComponent((i+1) + ') ' + title + ' (' + date + ' )');
+			var moreInfo = description + nl + ( encodeForEmail ? encodeURIComponent(url) : url );
+			var editButtons = encodeForEmail ? '' : ("<a class='delete' href='"  + queue[i].hashedURL + "'>remove</a>") + nl;
+
+			body += head + nl + moreInfo + nl + editButtons + nl;
+		}
+
+		callback( body );
+
+	});
+}
+
+this.emailIt = function() {
+
+  	// Create a mailto link and open it
+  	chrome.storage.sync.get('linkDiaryQueue', function(results) {
+
+  		generateLinksList( true, function(body) { 
+
+  			var email = [
+  			'mailto:email@echoecho.com?',
+  			'subject=LinksDiary - ' + (new Date()).toDateString(),
+  			'&body=' + body
+  			].join('');
+
+  			window.open(email,'_newtab');
+
+  		})
+
+  	});
   }
 
   this.fillPopupInfo = function() {
+
   	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
-		getView('popup.html').setTitle(arrayOfTabs[0].title);
-	});
+
+  		getView('popup.html').setTitle(arrayOfTabs[0].title);
+
+  	});
+
   }
 
-	this.fillPanelInfo = function() {
+  this.fillPanelInfo = function() {
+
   	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
-		
-  		generateLinksList( false, function(body) {
 
-			getView('panel.html').setListBody( decodeURIComponent( body ) );
-		
-		});
+		chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
-	});
+			var queue = results.linkDiaryQueue || [];
+  			getView('panel.html').setListBody( queue );
+
+  		});
+
+  	});
+
   }
 
   this.openPanel = function() {
@@ -108,31 +158,32 @@ var LinkDiary = function() {
   }
 
   function getView(viewFilename) {
-    var popupView = chrome.extension.getURL(viewFilename);
-	var views = chrome.extension.getViews();
 
-	for (var i = 0; i < views.length; i++) {
-    	var view = views[i];
+  	var popupView = chrome.extension.getURL(viewFilename);
+  	var views = chrome.extension.getViews();
 
-    	if( view.location.href == popupView ) {
-    		return view;
-    	}
-    }
+  	for (var i = 0; i < views.length; i++) {
+  		var view = views[i];
+
+  		if( view.location.href == popupView ) {
+  			return view;
+  		}
+  	}
   }
 
   function saveWebPage(webpage) {
 
-      chrome.storage.sync.get('linkDiaryQueue', function(results) {
+  	chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
-        var queue = results.linkDiaryQueue || [];
+  		var queue = results.linkDiaryQueue || [];
 
         // Check wheter it is new or not
         for( var i=0; i<queue.length; i++ ) {
 
-			console.log(i,queue[i].title, queue[i].url);
+        	console.log(i,queue[i].title, queue[i].url);
 
-          if( queue[i].url == webpage.url )
-            return;
+        	if( queue[i].url == webpage.url )
+        		return;
         }
 
         queue.push(webpage);
@@ -142,68 +193,89 @@ var LinkDiary = function() {
 
         // Save web page in queue
         chrome.storage.sync.set({'linkDiaryQueue':queue});
-      });
+    });
   }
+
 };
 
 var linkDiary = new LinkDiary();
 linkDiary.initBadgetText();
 
-// Run our kitten generation script as soon as the document's DOM is ready.
-document.addEventListener('DOMContentLoaded', function () {});
 
-// Event handler of Popup window 
+/**** Event handler of Popup window ****/
 chrome.extension.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        switch (request.directive) {
-        case "panel-open":
-            linkDiary.fillPanelInfo();
+	function(request, sender, sendResponse) {
+		switch (request.directive) {
+			
+			case "panel-open":
+			linkDiary.fillPanelInfo();
             sendResponse({}); // sending back empty response to sender
             break;
-        case "popup-open":
+            
+            case "panel-remove-item":
+			linkDiary.removeFromQueue( request.hashedURL );
+            sendResponse({}); // sending back empty response to sender
+            break;
+
+            case "popup-open":
             linkDiary.fillPopupInfo();
             sendResponse({}); // sending back empty response to sender
             break;
-        case "popup-addButton-click":
-            linkDiary.putLinkInQueue();
+            
+            case "popup-addButton-click":
+            linkDiary.addToQueue();
             sendResponse({}); // sending back empty response to sender
             break;
-        case "popup-shareButton-click":
+            
+            case "popup-shareButton-click":
             linkDiary.openPanel();
             sendResponse({}); // sending back empty response to sender
             break;
-        case "popup-clearButton-click":
-            linkDiary.clear();
+
+            case "popup-clearButton-click":
+            linkDiary.clearQueue();
             sendResponse({}); // sending back empty response to sender
             break;
-        default:
+
+            default:
             // helps debug when request directive doesn't match
             alert("Unmatched request of '" + request + "' from script to background.js from " + sender);
         }
     }
-);
+    );
 
 chrome.browserAction.onClicked.addListener(function() {
-  	linkDiary.putLinkInQueue();
+	linkDiary.addToQueue();
+});
+
+/**** Context Menu ****/
+chrome.contextMenus.create({
+	"title": "Open Panel",
+	"contexts": ["all"],
+	"onclick": function(info, tab) {
+
+		linkDiary.openPanel();
+
+	}
 });
 
 chrome.contextMenus.create({
-  "title": "Email Today LinksDiary",
-  "contexts": ["all"],
-  "onclick": function(info, tab) {
+	"title": "Email Today LinksDiary",
+	"contexts": ["all"],
+	"onclick": function(info, tab) {
 
-    linkDiary.shareIt();
+		linkDiary.emailIt();
 
-  }
+	}
 });
 
 
 chrome.contextMenus.create({
-  "title": "Reset LinksDiary",
-  "contexts": ["all"],
-  "onclick": function(info, tab) {
-  
-  linkDiary.clear();
+	"title": "Reset LinksDiary",
+	"contexts": ["all"],
+	"onclick": function(info, tab) {
 
-  }
+		linkDiary.clearQueue();
+
+	}
 });
