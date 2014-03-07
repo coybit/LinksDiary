@@ -18,7 +18,7 @@ var LinkDiary = function() {
         date: (new Date()).toDateString(),
         title: activeTab.title,
         url: activeTab.url,
-        description: getMoreInfoFromPopup(),
+        description: getPopupView().getDescription(),
         favIcon: activeTab.favIcon
       };
      
@@ -54,8 +54,8 @@ var LinkDiary = function() {
         var url = queue[i].url;
         var description = queue[i].description;
     
-    var head = encodeURIComponent((i+1) + ') ' + title + ' (' + date + ' )');
-    var moreInfo = description + nl + encodeURIComponent(url);
+    	var head = encodeURIComponent((i+1) + ') ' + title + ' (' + date + ' )');
+    	var moreInfo = description + nl + encodeURIComponent(url);
     
         body += head + nl + moreInfo + nl + nl
       }
@@ -70,7 +70,13 @@ var LinkDiary = function() {
     });
   }
 
-  function getMoreInfoFromPopup() {
+  this.fillPopupInfo = function() {
+  	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+			getPopupView().setTitle(arrayOfTabs[0].title);
+	});
+  }
+
+  function getPopupView() {
     var popupView = chrome.extension.getURL('popup.html');
 	var views = chrome.extension.getViews();
 
@@ -78,7 +84,7 @@ var LinkDiary = function() {
     	var view = views[i];
 
     	if( view.location.href == popupView ) {
-    		return view.getDescription();
+    		return view;
     	}
     }
   }
@@ -119,6 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {});
 chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
         switch (request.directive) {
+        case "popup-open":
+            linkDiary.fillPopupInfo();
+            sendResponse({}); // sending back empty response to sender
+            break;
         case "popup-addButton-click":
             linkDiary.putLinkInQueue();
             sendResponse({}); // sending back empty response to sender
@@ -135,7 +145,7 @@ chrome.extension.onMessage.addListener(
 );
 
 chrome.browserAction.onClicked.addListener(function() {
-  linkDiary.putLinkInQueue();
+  	linkDiary.putLinkInQueue();
 });
 
 chrome.contextMenus.create({

@@ -13,9 +13,18 @@ function clearClickHandler(e) {
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addButton').addEventListener('click', addClickHandler);
     document.getElementById('clearButton').addEventListener('click', clearClickHandler);
+
+    document.body.addEventListener('focus', clearClickHandler);
+
+    chrome.extension.sendMessage({directive: "popup-open"}, function(response) {});
 })
 
 /*****  Called from background.js *****/
 function getDescription() {
   return document.getElementById('description').value;
+}
+
+function setTitle(newTitle) {
+  console.log(newTitle);
+  document.getElementById('title').value = newTitle;
 }

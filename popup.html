@@ -10,45 +10,47 @@
       background: white;
     }
 
-    div:first-child {
-      margin-top: 0px;
+    #description {
+      display: block;
+      resize: none;
+      border-radius: 5px;
+      border: 1px solid #C5C5C5;
+      background-color: #FFFFFF;
+      outline: transparent;
     }
 
-    div {
-      cursor: pointer;
-      text-align: center;
-      padding: 1px 3px;
-      font-family: sans-serif;
-      font-size: 0.8em;
-      width: 100px;
-      margin-top: 1px;
-      background: #cccccc;
+    #addButton {
+      display: block;
+      width: 100%;
+      background-color: rgb(0, 143, 255);
+      color: white;
+      border: 2px solid #000;
     }
-    div:hover {
-      background: #aaaaaa;
+
+    #shareButton {
+      display: block;
+      width: 100%;
+      background-color: rgb(84, 180, 80);
+      color: white;
+      border: 2px solid #000;
     }
-    #red {
-      border: 1px solid red;
-      color: red;
+
+    #clearButton {
+      display: block;
+      width: 100%;
+      background-color: red;
+      color: white;
+      border: 2px solid #000;
     }
-    #blue {
-      border: 1px solid blue;
-      color: blue;
-    }
-    #green {
-      border: 1px solid green;
-      color: green;
-    }
-    #yellow {
-      border: 1px solid yellow;
-      color: yellow;
-    }
+
     </style>
     <script src="popup.js"></script>
   </head>
   <body>
-    <input type="text" id='description' placeholder="description">
-    <button id="addButton">Add</button>
-    <div id="clearButton">Clear</div>
+    <input type="text" id="title" cols="30" readonly>
+    <textarea id='description' placeholder="description" rows="3" cols="30"></textarea>
+    <button id="addButton">Add To Queue</button>
+    <button id="shareButton">Share Queue</button>
+    <button id="clearButton">Clear</button>
   </body>
 </html>
