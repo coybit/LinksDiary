@@ -227,7 +227,7 @@ chrome.extension.onMessage.addListener(
             sendResponse({}); // sending back empty response to sender
             break;
             
-            case "popup-shareButton-click":
+            case "popup-panelButton-click":
             linkDiary.openPanel();
             sendResponse({}); // sending back empty response to sender
             break;
