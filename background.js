@@ -57,6 +57,32 @@ this.clearQueue = function() {
     chrome.storage.sync.remove('linkDiaryQueue');
 }
 
+this.editItemInQueue = function(linkHashCode, newDescription) {
+
+	chrome.storage.sync.get('linkDiaryQueue', function(results) {
+
+  		var queue = results.linkDiaryQueue || [];
+  		var newQueue = [];
+
+        // Check wheter it is new or not
+        for( var i=0; i<queue.length; i++ ) {
+
+        	console.log(i,queue[i].hashedURL, linkHashCode);
+
+        	if( queue[i].hashedURL == linkHashCode )
+        		queue[i].description = newDescription;
+        	
+        	newQueue.push( queue[i] );        		
+        }
+
+        // Increase badge number
+        chrome.browserAction.setBadgeText({'text':newQueue.length.toString()});
+
+        // Save web page in queue
+        chrome.storage.sync.set({'linkDiaryQueue':newQueue});
+    });
+}
+
 this.removeFromQueue = function(linkHashCode) {
 
 	chrome.storage.sync.get('linkDiaryQueue', function(results) {
@@ -214,6 +240,11 @@ chrome.extension.onMessage.addListener(
             
             case "panel-remove-item":
 			linkDiary.removeFromQueue( request.hashedURL );
+            sendResponse({}); // sending back empty response to sender
+            break;
+
+            case "panel-edit-item":
+			linkDiary.editItemInQueue( request.hashedURL, request.newDescription );
             sendResponse({}); // sending back empty response to sender
             break;
 
