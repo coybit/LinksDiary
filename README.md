@@ -7,12 +7,12 @@ A chrome extension for storing useful daily links and sharing them, all together
 ### Screen Shots
 Context Menu:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot1.tiff)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot1.png)
 
 Button:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot2.tiff)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot2.png)
 
 Panel Page:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot3.tiff)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot3.png)
