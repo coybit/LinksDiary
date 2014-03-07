@@ -1,11 +1,18 @@
 LinksDiary
 ==========
 
-A Chrome Extension For Storing Useful Links And Sharing All Together.
-User can see all the collected links in panel page, clear stored links or send it directly by email.
+### Introduction
+A chrome extension for storing useful daily links and sharing them, all together, with other persons.User can see all the collected links in panel page, clear stored links or send it directly by email. Also user can add description to each link and edit the description later.
 
-Version 0.2
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/sc1.png)
+### Screen Shots
+Context Menu:
 
-Version 0.3
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/sc2.png)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot1.tiff)
+
+Button:
+
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot2.tiff)
+
+Panel Page:
+
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot3.tiff)
