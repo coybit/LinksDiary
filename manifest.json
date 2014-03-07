@@ -12,11 +12,12 @@
   },
 
   "browser_action": {
-    "default_icon": "icon16.png"
+    "default_icon": "icon16.png",
+    "default_popup": "popup.html"
   },
 
  "background": {
-    "scripts": ["popup.js"]
+    "scripts": ["background.js"]
   },
 
   "permissions": [
