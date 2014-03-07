@@ -14,3 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addButton').addEventListener('click', addClickHandler);
     document.getElementById('clearButton').addEventListener('click', clearClickHandler);
 })
+
+/*****  Called from background.js *****/
+function getDescription() {
+  return document.getElementById('description').value;
+}

@@ -18,6 +18,7 @@ var LinkDiary = function() {
         date: (new Date()).toDateString(),
         title: activeTab.title,
         url: activeTab.url,
+        description: getMoreInfoFromPopup(),
         favIcon: activeTab.favIcon
       };
      
@@ -51,11 +52,12 @@ var LinkDiary = function() {
         var title = queue[i].title;
         var date = queue[i].date;
         var url = queue[i].url;
+        var description = queue[i].description;
     
     var head = encodeURIComponent((i+1) + ') ' + title + ' (' + date + ' )');
-    var description = encodeURIComponent(url);
+    var moreInfo = description + nl + encodeURIComponent(url);
     
-        body += head + nl + description + nl + nl
+        body += head + nl + moreInfo + nl + nl
       }
 
       var email = [
@@ -66,6 +68,19 @@ var LinkDiary = function() {
       window.open(email,'_newtab');
 
     });
+  }
+
+  function getMoreInfoFromPopup() {
+    var popupView = chrome.extension.getURL('popup.html');
+	var views = chrome.extension.getViews();
+
+	for (var i = 0; i < views.length; i++) {
+    	var view = views[i];
+
+    	if( view.location.href == popupView ) {
+    		return view.getDescription();
+    	}
+    }
   }
 
   function saveWebPage(webpage) {
