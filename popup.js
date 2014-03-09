@@ -10,6 +10,12 @@ function shareClickHandler(e) {
     });
 }
 
+function emailClickHandler(e) {
+    chrome.extension.sendMessage({directive: "popup-emailButton-click"}, function(response) {
+        this.close(); // close the popup when the background finishes processing request
+    });
+}
+
 function clearClickHandler(e) {
     chrome.extension.sendMessage({directive: "popup-clearButton-click"}, function(response) {
         this.close(); // close the popup when the background finishes processing request
@@ -20,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addButton').addEventListener('click', addClickHandler);
     document.getElementById('panelButton').addEventListener('click', shareClickHandler);
     document.getElementById('clearButton').addEventListener('click', clearClickHandler);
+    document.getElementById('emailButton').addEventListener('click', emailClickHandler);
 
     chrome.extension.sendMessage({directive: "popup-open"}, function(response) {});
 })
@@ -31,5 +38,5 @@ function getDescription() {
 
 function setTitle(newTitle) {
   console.log(newTitle);
-  document.getElementById('title').value = newTitle;
+  document.getElementById('title').innerText = newTitle;
 }

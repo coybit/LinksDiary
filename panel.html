@@ -78,6 +78,38 @@
             background-color: #FF9D20;
             padding: 0.3em 0;
             border-bottom: 2px solid rgb(252, 111, 0);
+            position: relative;
+            margin-bottom: 2em;
+        }
+
+        #emailButton {
+            position: absolute;
+            right: 1em;
+            bottom: -45px;
+            font-size: 0.4em;
+            line-height: 1.5em;
+            font-weight: 700;
+            background-color: orange;
+            padding: 0.3em;
+            box-shadow: 0 3px 0 rgb(170, 120, 27);
+            border: 0;
+            border-radius: 5px;
+            outline: 0;
+        }
+
+        #emailButton:hover {
+            background-color: #ffc802;
+        }
+
+        #emailButton:active {
+            background-color: #ffc802;
+            box-shadow: 0 1px 0 rgb(170, 120, 27);
+            bottom: -49px;
+        }
+
+        #emailButton span{
+            font-size: 1.6em;
+            padding-right: 0.3em;
         }
 
     </style>
@@ -85,9 +117,14 @@
 
 <body>
 <div class="header">
-    Links List
+    Panel Links List
+    <button id="emailButton">
+        <span class="plyphicon glyphicon-envelope"></span>Email Links
+    </button>
 </div>
 
-<div id="listbody">empty</div>
+<div id="listbody">
+    Please open just one panel tab!
+</div>
 </body>
 </html>

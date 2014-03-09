@@ -108,6 +108,10 @@ function setListBody(queue) {
            // .append( footer );
 
 		$('#listbody').append( item );
+
+        $('#emailButton').click(function(){
+            chrome.extension.sendMessage({directive: "panel-email-items" } );
+        })
 	}
   //document.getElementById('listbody').innerHTML = listBody;
 }
