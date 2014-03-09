@@ -38,5 +38,5 @@ function getDescription() {
 
 function setTitle(newTitle) {
   console.log(newTitle);
-  document.getElementById('title').innerText = newTitle;
+  document.getElementById('title').innerText = 'Title: ' + newTitle;
 }
