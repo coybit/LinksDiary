@@ -7,19 +7,19 @@ A chrome extension for storing useful daily links and sharing them, all together
 ### Screen Shots
 On Chrome context menu:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot1.png)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/icons/shot1.png)
 
 
 On Chrome toolbar:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot2.png)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/icons/shot2.png)
 
 
 Panel ( Links List ) page:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot3.png)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/icons/shot3.png)
 
 
 A sample generated Email:
 
-![alt tag](https://raw.github.com/coybit/LinksDiary/master/shot4.png)
+![alt tag](https://raw.github.com/coybit/LinksDiary/master/icons/shot4.png)
