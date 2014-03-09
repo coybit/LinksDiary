@@ -1,43 +1,93 @@
 <html>
 <head>
-<title>LinkDiary Panel</title>
-<script src='jquery-1.11.0.min.js'></script>
-<script src="panel.js"></script>
-<style>
-.item {
-border: 1px solid #000;
-margin-bottom: 1em
-}
+    <title>LinkDiary Panel</title>
+    <link href="/css/bootstrap.glyphicons.css" rel="stylesheet">
+    <script src='jquery-1.11.0.min.js'></script>
+    <script src="panel.js"></script>
+    <style>
+        .item {
+            margin: 3em 20%;
+        }
 
-.itemHeader {
-font-size: 1.2em;
-line-height: 1.5em;
-background-color: rgb(255, 207, 121);
-padding: 0.5em;
-}
+        .itemHeader {
+            color: #B4B4B4;
+        }
 
-.itemFooter {
-font-size: 1.0em;
-line-height: 1.0em;
-background-color: rgb(255, 207, 121);
-padding: 0.5em;
-}
+        .itemTitle {
+            color: #000;
+            font-size: 1.2em;
+            line-height: 1.5em;
+        }
 
-.itemBody {
-padding: 0.5em;
-background-color: rgb(255, 240, 213);
-}
+        .itemTitle button {
+            float: right;
+            height: 32px;
+            width: 32px;
+            margin-left: 0.25em;
+        }
 
-.date {
-float: right;
-font-size: 0.8em;
-}
+        .itemTitle button.remove {
+        }
 
-</style>
+        .itemTitle p {
+            display: inline;
+        }
+
+        .itemTitle a {
+            font-size: 0.9em;
+            margin-left: 1em;
+        }
+
+        .itemFavIcon {
+            display: inline-block;
+            height: 16px;
+            width: 16px;
+            margin-right: 0.5em;
+            vertical-align: middle;
+        }
+
+        .itemDate {
+            display: inline-block;
+        }
+
+        .itemHost {
+            display: inline-block;
+        }
+
+        .itemFooter {
+            font-size: 0.7em;
+            line-height: 1.0em;
+        }
+
+        .itemBody {
+            padding: 1em 0;
+            border-top: 2px solid #FF9D20;
+        }
+
+        body {
+            background-color: #f1f1f1;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 0;
+        }
+
+        .header {
+            font-size: 2.8em;
+            font-weight: 700;
+            text-align: center;
+            color: #000;
+            background-color: #FF9D20;
+            padding: 0.3em 0;
+            border-bottom: 2px solid rgb(252, 111, 0);
+        }
+
+    </style>
 </head>
 
 <body>
-<h2>Links List</h2>
+<div class="header">
+    Links List
+</div>
+
 <div id="listbody">empty</div>
 </body>
 </html>

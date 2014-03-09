@@ -32,9 +32,11 @@ var LinkDiary = function() {
 			title: activeTab.title,
 			url: activeTab.url,
 			description: getView('popup.html').getDescription(),
-			favIcon: activeTab.favIcon,
+			favIcon: activeTab.favIconUrl,
 			hashedURL: activeTab.url.hashCode()
 		};
+
+        console.log(activeTab);
 
 		saveWebPage(tab);
 

@@ -1,18 +1,59 @@
+function parseUri (str) {
+    var	o   = parseUri.options,
+        m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+        uri = {},
+        i   = 14;
+
+    while (i--) uri[o.key[i]] = m[i] || "";
+
+    uri[o.q.name] = {};
+    uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+        if ($1) uri[o.q.name][$1] = $2;
+    });
+
+    return uri;
+};
+
+parseUri.options = {
+    strictMode: false,
+    key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+    q:   {
+        name:   "queryKey",
+        parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: {
+        strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+    }
+};
+
 function setListBody(queue) {
 
 	$('#listbody').html('')
 
 	for( var i=0; i<queue.length;i++){
 
-		var link = $('<a>').attr('href', queue[i].url).text(queue[i].url);
-		var dateLabel = $('<span>').addClass('date').text(queue[i].date);
+        var favicon = $('<img>').addClass('itemFavIcon').attr('src',queue[i].favIcon);
+        var seperator = $('<span>|</span>').css('margin','0 1em');
+        var link = $('<a>').attr('href', queue[i].url).text(queue[i].url);
+		var dateLabel = $('<div>').addClass('itemDate').text(queue[i].date);
+        var title = $('<div>').addClass('itemTitle')
+            .append(favicon)
+            .append( $('<p>').text(queue[i].title) )
+            .append( $('<a>').attr('href',queue[i].url).text('link') );
+        var host = $('<div>').addClass('itemHost').text( parseUri(queue[i].url).host );
+
 		var item = $('<div>').addClass('item');
-		var header = $('<div>').addClass('itemHeader').text( queue[i].title ).append( dateLabel );
+		var header = $('<div>').addClass('itemHeader')
+            .append( title )
+            .append( dateLabel )
+            .append( seperator )
+            .append( host );
 		var body = $('<div>').addClass('itemBody').text( queue[i].description );
 		var footer = $('<div>').addClass('itemFooter').html( link );
 
-		header.append( $('<button>')
-			.text('Remove')
+		title.append( $('<button>')
+            .addClass('glyphicon glyphicon-trash remove')
 			.attr('hashcode',queue[i].hashedURL)
 			.click(function(e) {
 
@@ -24,8 +65,8 @@ function setListBody(queue) {
 
 			}) );
 
-		header.append( $('<button>')
-			.text('Edit')
+        title.append( $('<button>')
+            .addClass('glyphicon glyphicon-pencil')
 			.attr('hashcode',queue[i].hashedURL)
 			.click( 
 				(function(h,b,hash){
@@ -40,7 +81,7 @@ function setListBody(queue) {
 							// Back UI to Normal mode
 							h.find('button.hidden').css('display','inline').removeClass('hidden');
 							h.find('.editorButton').remove();
-							$('.itemBody').attr('contenteditable','false').css('background-color','');
+							b.attr('contenteditable','false').css('background-color','');
 						}
 					}
 
@@ -51,14 +92,20 @@ function setListBody(queue) {
 						// Go to edit mode
 						b.attr('contenteditable','true').css('background-color','#fff');
 						h.find('button').css('display','none').addClass('hidden');
-						header.append( $('<button>').text('OK').addClass('editorButton').click( exitEditMode(h,b,currentText,hash,true) ) );
-						header.append( $('<button>').text('Cancel').addClass('editorButton').click( exitEditMode(h,b,currentText,hash,false) ) );
+						h.append( $('<button>')
+                            .addClass('editorButton glyphicon glyphicon-ok')
+                            .click( exitEditMode(h,b,currentText,hash,true) ) );
+						h.append( $('<button>')
+                            .addClass('editorButton glyphicon glyphicon-remove')
+                            .click( exitEditMode(h,b,currentText,hash,false) ) );
 					}
 
-				})(header,body,queue[i].hashedURL)
+				})(title,body,queue[i].hashedURL)
 			));
 
-		item.append( header ).append( body ).append( footer );
+		item.append( header )
+            .append( body )
+           // .append( footer );
 
 		$('#listbody').append( item );
 	}
