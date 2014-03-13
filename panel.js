@@ -37,7 +37,7 @@ function setListBody(queue) {
         var seperator = $('<span>|</span>').css('margin','0 1em');
 		var dateLabel = $('<div>').addClass('itemDate').text(queue[i].date);
         var host = $('<div>').addClass('itemHost').text( parseUri(queue[i].url).host );
-        var group = queue[i].group ? $('<div>').addClass('group').text( queue[i].group ) : '';
+        var category = queue[i].category ? $('<div>').addClass('category').text( queue[i].category ) : '';
         var name = $('<a>')
             .addClass('itemTitle')
             .attr('href',queue[i].url)
@@ -46,7 +46,7 @@ function setListBody(queue) {
         var title = $('<div>')
             .append(favicon)
             .append(name)
-            .append(group)
+            .append(category)
 
 		var header = $('<div>').addClass('itemHeader')
             .append( title )

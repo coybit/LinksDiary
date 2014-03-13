@@ -32,7 +32,15 @@
             vertical-align: middle;
         }
 
-        #link-group {
+        #link-category {
+            display: block;
+            width: 100%;
+            margin: 1em 0;
+            height: 2em;
+            outline: 0;
+        }
+
+        #group {
             display: block;
             width: 100%;
             margin: 1em 0;
@@ -102,7 +110,9 @@
 <body>
 <div class="wrapper">
     <img id="favIcon" width="16px" height="16px"><p id="title"></p>
-    <select id="link-group">
+    <select id="link-category"></select>
+    <select id="group">
+        <option>Darchin</option>
     </select>
     <textarea id='description' placeholder="Enter a description" rows="4" cols="30"></textarea>
     <button id="addButton">Add To Queue</button>

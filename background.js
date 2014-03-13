@@ -1,4 +1,3 @@
-// 
 
 var linkDiaryKey = 'linkDiaryQueue';
 
@@ -33,7 +32,7 @@ var LinkDiary = function() {
                 title: activeTab.title,
                 url: activeTab.url,
                 description: info.description,
-                group: info.groupID,
+                category: info.categoryID,
                 favIcon: activeTab.favIconUrl,
                 hashedURL: activeTab.url.hashCode()
             };
@@ -161,7 +160,7 @@ var LinkDiary = function() {
 
         chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
-            var groups = [
+            var categories = [
                 {text:'Development',id:'Development'},
                 {text:'Design',id:'Design'},
                 {text:'Marketing',id:'Marketing'},
@@ -172,7 +171,7 @@ var LinkDiary = function() {
             getView('popup.html').initPopup(
                 arrayOfTabs[0].title,
                 arrayOfTabs[0].favIconUrl,
-                groups
+                categories
             );
 
         });
@@ -221,9 +220,6 @@ var LinkDiary = function() {
 
             // Check wheter it is new or not
             for( var i=0; i<queue.length; i++ ) {
-
-                console.log(i,queue[i].title, queue[i].url);
-
                 if( queue[i].url == webpage.url )
                     return;
             }
@@ -238,11 +234,40 @@ var LinkDiary = function() {
         });
     }
 
+    this.LoadFromServer = function() {
+        var  loadUrl = 'http://localhost:3000/links/darchin/coybit';
+
+        $.get(loadUrl).done( function(serverQueue){
+            chrome.storage.sync.set({'linkDiaryQueue':serverQueue.links});
+        });
+    }
+
+    this.SaveAllToServer = function(callback) {
+        chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+
+            chrome.storage.sync.get('linkDiaryQueue', function(results) {
+
+                var queue = results.linkDiaryQueue || [];
+                var  saveUrl = 'http://localhost:3000/links/darchin/coybit';
+                var responsCount = 0;
+
+                for( var i=0; i<queue.length; i++ ){
+                    $.post(saveUrl, {link: queue[i] }).done( function(){
+                        responsCount++;
+                        if( responsCount==queue.length)
+                            callback();
+                    });
+                }
+            });
+        });
+
+    }
+
 };
 
 var linkDiary = new LinkDiary();
 linkDiary.initBadgetText();
-
+linkDiary.SaveAllToServer( function() { linkDiary.LoadFromServer() });
 
 /**** Event handler of Popup window ****/
 chrome.extension.onMessage.addListener(

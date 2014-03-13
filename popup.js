@@ -34,17 +34,19 @@ document.addEventListener('DOMContentLoaded', function () {
 /*****  Called from background.js *****/
 function getInfo() {
     return {
-        groupID: $('#link-group').val(),
+        sender: 'coybit',
+        group:  $('#group').val(),
+        categoryID: $('#link-category').val(),
         description: document.getElementById('description').value
     };
 }
 
-function initPopup(newTitle,favIconUrl,groups) {
+function initPopup(newTitle,favIconUrl,categories) {
     document.getElementById('title').innerText =  newTitle;
     document.getElementById('favIcon').src = favIconUrl;
 
-    for(var i=0; i<groups.length;i++) {
-        var option = $('<option>').attr('value', groups[i].id).text(groups[i].text);
-        $('#link-group').append( option );
+    for(var i=0; i<categories.length;i++) {
+        var option = $('<option>').attr('value', categories[i].id).text(categories[i].text);
+        $('#link-category').append( option );
     }
 }
