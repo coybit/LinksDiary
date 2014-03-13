@@ -113,6 +113,37 @@
             padding-right: 0.3em;
         }
 
+
+        #clearButton {
+            position: absolute;
+            right: 11em;
+            bottom: -45px;
+            font-size: 0.4em;
+            line-height: 1.5em;
+            font-weight: 700;
+            background-color: #bb2632;
+            padding: 0.3em 1em;
+            box-shadow: 0 3px 0 #8b1f23;
+            border: 0;
+            border-radius: 5px;
+            outline: 0;
+            color: #f1f1f1;
+        }
+
+        #clearButton:hover {
+            background-color: #d32737;
+        }
+
+        #clearButton:active {
+            box-shadow: 0 1px 0 #8b1f23;
+            bottom: -49px;
+        }
+
+        #clearButton span{
+            font-size: 1.6em;
+            padding-right: 0.3em;
+        }
+
     </style>
 </head>
 
@@ -121,6 +152,9 @@
     Links List
     <button id="emailButton">
         <span class="plyphicon glyphicon-envelope"></span>Email Links
+    </button>
+    <button id="clearButton">
+        <span class="plyphicon glyphicon-remove-sign"></span>Remove All Links
     </button>
 </div>
 

@@ -112,6 +112,10 @@ function setListBody(queue) {
         $('#emailButton').click(function(){
             chrome.extension.sendMessage({directive: "panel-email-items" } );
         })
+
+        $('#clearButton').click( function() {
+            chrome.extension.sendMessage({directive: "panel-clearButton-click"});
+        });
 	}
   //document.getElementById('listbody').innerHTML = listBody;
 }

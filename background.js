@@ -275,6 +275,7 @@ chrome.extension.onMessage.addListener(
                 sendResponse({}); // sending back empty response to sender
                 break;
 
+            case "panel-clearButton-click":
             case "popup-clearButton-click":
                 linkDiary.clearQueue();
                 sendResponse({}); // sending back empty response to sender
