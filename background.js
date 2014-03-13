@@ -164,7 +164,9 @@ var LinkDiary = function() {
             var groups = [
                 {text:'Development',id:'Development'},
                 {text:'Design',id:'Design'},
-                {text:'Marketing',id:'Marketing'}
+                {text:'Marketing',id:'Marketing'},
+                {text:'Fun',id:'Fun'},
+                {text:'Other',id:'Other'}
             ]
 
             getView('popup.html').initPopup(
