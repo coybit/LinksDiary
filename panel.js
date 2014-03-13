@@ -35,22 +35,26 @@ function setListBody(queue) {
 
         var favicon = $('<img>').addClass('itemFavIcon').attr('src',queue[i].favIcon);
         var seperator = $('<span>|</span>').css('margin','0 1em');
-        var link = $('<a>').attr('href', queue[i].url).text(queue[i].url);
 		var dateLabel = $('<div>').addClass('itemDate').text(queue[i].date);
-        var title = $('<div>').addClass('itemTitle')
-            .append(favicon)
-            .append( $('<p>').text(queue[i].title) )
-            .append( $('<a>').attr('href',queue[i].url).text('link') );
         var host = $('<div>').addClass('itemHost').text( parseUri(queue[i].url).host );
+        var group = queue[i].group ? $('<div>').addClass('group').text( queue[i].group ) : '';
+        var name = $('<a>')
+            .addClass('itemTitle')
+            .attr('href',queue[i].url)
+            .text(queue[i].title)
 
-		var item = $('<div>').addClass('item');
+        var title = $('<div>')
+            .append(favicon)
+            .append(name)
+            .append(group)
+
 		var header = $('<div>').addClass('itemHeader')
             .append( title )
             .append( dateLabel )
             .append( seperator )
             .append( host );
+
 		var body = $('<div>').addClass('itemBody').text( queue[i].description );
-		var footer = $('<div>').addClass('itemFooter').html( link );
 
 		title.append( $('<button>')
             .addClass('glyphicon glyphicon-trash remove')
@@ -103,9 +107,9 @@ function setListBody(queue) {
 				})(title,body,queue[i].hashedURL)
 			));
 
-		item.append( header )
+        var item = $('<div>').addClass('item')
+            .append( header )
             .append( body )
-           // .append( footer );
 
 		$('#listbody').append( item );
 

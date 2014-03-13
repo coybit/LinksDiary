@@ -32,12 +32,19 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 /*****  Called from background.js *****/
-function getDescription() {
-  return document.getElementById('description').value;
+function getInfo() {
+    return {
+        groupID: $('#link-group').val(),
+        description: document.getElementById('description').value
+    };
 }
 
-function setTitle(newTitle,favIcpnUrl) {
-  console.log(newTitle,favIcpnUrl);
-  document.getElementById('title').innerText =  newTitle;
-    document.getElementById('favIcon').src = favIcpnUrl;
+function initPopup(newTitle,favIconUrl,groups) {
+    document.getElementById('title').innerText =  newTitle;
+    document.getElementById('favIcon').src = favIconUrl;
+
+    for(var i=0; i<groups.length;i++) {
+        var option = $('<option>').attr('value', groups[i].id).text(groups[i].text);
+        $('#link-group').append( option );
+    }
 }

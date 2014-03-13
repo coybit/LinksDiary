@@ -26,17 +26,19 @@ var LinkDiary = function() {
         chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
             var activeTab = arrayOfTabs[0];
+            var info = getView('popup.html').getInfo();
 
             var tab = {
                 date: (new Date()).toDateString(),
                 title: activeTab.title,
                 url: activeTab.url,
-                description: getView('popup.html').getDescription(),
+                description: info.description,
+                group: info.groupID,
                 favIcon: activeTab.favIconUrl,
                 hashedURL: activeTab.url.hashCode()
             };
 
-            console.log(activeTab);
+            console.log(tab);
 
             saveWebPage(tab);
 
@@ -159,7 +161,17 @@ var LinkDiary = function() {
 
         chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
-            getView('popup.html').setTitle(arrayOfTabs[0].title, arrayOfTabs[0].favIconUrl);
+            var groups = [
+                {text:'Development',id:'Development'},
+                {text:'Design',id:'Design'},
+                {text:'Marketing',id:'Marketing'}
+            ]
+
+            getView('popup.html').initPopup(
+                arrayOfTabs[0].title,
+                arrayOfTabs[0].favIconUrl,
+                groups
+            );
 
         });
 
