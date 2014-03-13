@@ -159,7 +159,7 @@ var LinkDiary = function() {
 
         chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
-            getView('popup.html').setTitle(arrayOfTabs[0].title);
+            getView('popup.html').setTitle(arrayOfTabs[0].title, arrayOfTabs[0].favIconUrl);
 
         });
 

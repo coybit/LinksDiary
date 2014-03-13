@@ -36,7 +36,8 @@ function getDescription() {
   return document.getElementById('description').value;
 }
 
-function setTitle(newTitle) {
-  console.log(newTitle);
-  document.getElementById('title').innerText = 'Title: ' + newTitle;
+function setTitle(newTitle,favIcpnUrl) {
+  console.log(newTitle,favIcpnUrl);
+  document.getElementById('title').innerText =  newTitle;
+    document.getElementById('favIcon').src = favIcpnUrl;
 }

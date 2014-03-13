@@ -18,7 +18,14 @@
         #title {
             width: 396px;
             margin: 0;
-            padding: 0;
+            padding: 0 0 0 0.3em;
+            display: inline;
+            vertical-align: middle;
+        }
+
+        #favIcon {
+            display: inline-block;
+            vertical-align: middle;
         }
 
         #description {
@@ -76,13 +83,12 @@
         #seperator {
             margin: 0 0.3em;
         }
-
     </style>
     <script src="popup.js"></script>
 </head>
 <body>
 <div class="wrapper">
-    <p id="title"></p>
+    <img id="favIcon" width="16px" height="16px"><p id="title"></p>
     <textarea id='description' placeholder="Enter a description" rows="4" cols="30"></textarea>
     <button id="addButton">Add To Queue</button>
     <div class="footer">
