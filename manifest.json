@@ -3,7 +3,7 @@
 
   "name": "LinksDiary",
   "description": "Collect interesting links during a day and share all of them at end of the day",
-  "version": "0.4",
+  "version": "0.5",
 
   "icons": {
     "16": "icons/icon16.png",
