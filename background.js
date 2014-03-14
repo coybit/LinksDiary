@@ -234,11 +234,13 @@ var LinkDiary = function() {
         });
     }
 
-    this.LoadFromServer = function() {
-        var  loadUrl = 'http://localhost:3000/links/darchin/coybit';
+    this.LoadFromServer = function(callback) {
+        //var  loadUrl = 'http://localhost:3000/links/darchin/coybit';
+        var  loadUrl = 'http://linksDiary.herokuapp.com/links/darchin/coybit';
 
         $.get(loadUrl).done( function(serverQueue){
             chrome.storage.sync.set({'linkDiaryQueue':serverQueue.links});
+            callback();
         });
     }
 
@@ -248,7 +250,8 @@ var LinkDiary = function() {
             chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
                 var queue = results.linkDiaryQueue || [];
-                var  saveUrl = 'http://localhost:3000/links/darchin/coybit';
+                //var  saveUrl = 'http://localhost:3000/links/darchin/coybit';
+                var  saveUrl = 'http://linksDiary.herokuapp.com//links/darchin/coybit';
                 var responsCount = 0;
 
                 for( var i=0; i<queue.length; i++ ){
@@ -266,8 +269,12 @@ var LinkDiary = function() {
 };
 
 var linkDiary = new LinkDiary();
-linkDiary.initBadgetText();
-linkDiary.SaveAllToServer( function() { linkDiary.LoadFromServer() });
+
+linkDiary.SaveAllToServer( function() { 
+    linkDiary.LoadFromServer( function() {
+        linkDiary.initBadgetText();
+    }) 
+});
 
 /**** Event handler of Popup window ****/
 chrome.extension.onMessage.addListener(
