@@ -27,17 +27,23 @@ parseUri.options = {
     }
 };
 
+var clip;
+
 function setListBody(queue) {
 
 	$('#listbody').html('')
 
-	for( var i=0; i<queue.length;i++){
+    for( var i=0; i<queue.length;i++){
+
 
         var favicon = $('<img>').addClass('itemFavIcon').attr('src',queue[i].favIcon);
         var seperator = $('<span>|</span>').css('margin','0 1em');
 		var dateLabel = $('<div>').addClass('itemDate').text(queue[i].date);
         var host = $('<div>').addClass('itemHost').text( parseUri(queue[i].url).host );
         var category = queue[i].category ? $('<div>').addClass('category').text( queue[i].category ) : '';
+
+        var clipboard = $('<a>').addClass('itemCopy').text('Copy');
+
         var name = $('<a>')
             .addClass('itemTitle')
             .attr('href',queue[i].url)
@@ -52,7 +58,9 @@ function setListBody(queue) {
             .append( title )
             .append( dateLabel )
             .append( seperator )
-            .append( host );
+            .append( host )
+            .append( seperator )
+            .append( clipboard );
 
 		var body = $('<div>').addClass('itemBody').text( queue[i].description );
 
@@ -122,6 +130,13 @@ function setListBody(queue) {
         });
 	}
   //document.getElementById('listbody').innerHTML = listBody;
+
+    $(".itemCopy").click(function(){
+        var title = $(this).parent().find('.itemTitle');
+        var txt = '*' + title.text().trim() + '*  (' + title.attr('href') + ')';
+
+        prompt ("Copy link, then click OK.", txt);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
