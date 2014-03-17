@@ -1,28 +1,36 @@
 {
-  "manifest_version": 2,
+    "manifest_version": 2,
 
-  "name": "LinksDiary",
-  "description": "Collect interesting links during a day and share all of them at end of the day",
-  "version": "0.5",
+    "name": "LinksDiary",
+    "description": "Collect interesting links during a day and share all of them at end of the day",
+    "version": "0.5",
 
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
 
-  "browser_action": {
-    "default_icon": "icons/icon16.png",
-    "default_popup": "popup.html"
-  },
+    "browser_action": {
+        "default_icon": "icons/icon16.png",
+        "default_popup": "popup.html"
+    },
 
- "background": {
-    "scripts": ["js/jquery-1.11.0.min.js", "background.js"]
-  },
+    "background": {
+        "scripts": ["js/jquery-1.11.0.min.js",
+            "chrome_ex_oauth.js",
+            "chrome_ex_oauthsimple.js",
+            "background.js"]
+    },
 
-  "permissions": [
-    "storage",
-    "tabs",
-    "contextMenus"
-  ]
+    "permissions": [
+        "storage",
+        "tabs",
+        "contextMenus",
+        "https://docs.google.com/feeds/*",
+        "https://api.twitter.com/oauth2/token",
+        "https://api.twitter.com/oauth/request_token",
+        "https://api.twitter.com/oauth/authorize",
+        "https://api.twitter.com/oauth/access_token"
+    ]
 }

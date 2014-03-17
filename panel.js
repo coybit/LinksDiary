@@ -1,3 +1,4 @@
+
 function parseUri (str) {
     var	o   = parseUri.options,
         m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
@@ -128,6 +129,7 @@ function setListBody(queue) {
         $('#clearButton').click( function() {
             chrome.extension.sendMessage({directive: "panel-clearButton-click"});
         });
+
 	}
   //document.getElementById('listbody').innerHTML = listBody;
 
@@ -137,6 +139,8 @@ function setListBody(queue) {
 
         prompt ("Copy link, then click OK.", txt);
     });
+
+    console.log( chromeExOAuth.hasToken() );
 }
 
 document.addEventListener('DOMContentLoaded', function () {
