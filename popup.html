@@ -104,6 +104,12 @@
             margin: 0 0.3em;
         }
 
+        .message {
+            margin: 10px 30px;
+            color: red;
+            font-weight: 700;
+        }
+
     </style>
     <script src="popup.js"></script>
 </head>
@@ -125,6 +131,9 @@
         <span id="seperator">|</span>
         <a href="#" id="logoutButton">Logout</a>
     </div>
+</div>
+<div class="message" hidden>
+    <button id="loginButton">Login with Twitter</button>
 </div>
 </body>
 </html>

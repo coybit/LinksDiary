@@ -22,6 +22,12 @@ function clearClickHandler(e) {
     });
 }
 
+function loginClickHandler(e) {
+    chrome.extension.sendMessage({directive: "login"}, function(response) {
+        this.close(); // close the popup when the background finishes processing request
+    });
+}
+
 function logoutClickHandler(e) {
     chrome.extension.sendMessage({directive: "logout"}, function(response) {
         this.close(); // close the popup when the background finishes processing request
@@ -33,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('panelButton').addEventListener('click', shareClickHandler);
     document.getElementById('clearButton').addEventListener('click', clearClickHandler);
     document.getElementById('emailButton').addEventListener('click', emailClickHandler);
+    document.getElementById('loginButton').addEventListener('click', loginClickHandler);
     document.getElementById('logoutButton').addEventListener('click', logoutClickHandler);
 
     chrome.extension.sendMessage({directive: "popup-open"}, function(response) {});
@@ -48,6 +55,17 @@ function getInfo() {
 }
 
 function initPopup(newTitle,favIconUrl,categories,isLoggedin) {
+
+    if( isLoggedin == false) {
+        $('.message').show();
+        $('.wrapper').hide();
+        return;
+    }
+    else {
+        $('.message').hide();
+        $('.wrapper').show();
+    }
+
     document.getElementById('title').innerText =  newTitle;
     document.getElementById('favIcon').src = favIconUrl;
 

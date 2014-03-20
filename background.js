@@ -280,7 +280,8 @@ var LinkDiary = function() {
 
     this.logout = function() {
         chrome.storage.sync.get('linkDiaryUser', function(result) {
-            result.linkDiaryUser = null;
+            serverToken = result.linkDiaryUser = null;
+
             chrome.storage.sync.set( { 'linkDiaryUser': result.linkDiaryUser } );
         });
     }
@@ -376,6 +377,11 @@ linkDiary.login(function(){
 chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
         switch (request.directive) {
+
+            case "login":
+                linkDiary.login();
+                sendResponse({}); // sending back empty response to sender
+                break;
 
             case "logout":
                 linkDiary.logout();
