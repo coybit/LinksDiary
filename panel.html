@@ -135,17 +135,43 @@
             outline: 0;
             color: #f1f1f1;
         }
-
         #clearButton:hover {
             background-color: #d32737;
         }
-
         #clearButton:active {
             box-shadow: 0 1px 0 #8b1f23;
             bottom: -49px;
         }
-
         #clearButton span{
+            font-size: 1.0em;
+            padding-right: 0.3em;
+        }
+
+        #newGroupButton {
+            position: absolute;
+            left: 1em;
+            bottom: -45px;
+            font-size: 0.4em;
+            line-height: 1.5em;
+            font-weight: 700;
+            background-color: #bb2632;
+            padding: 0.5em 1em;
+            box-shadow: 0 3px 0 #8b1f23;
+            border: 0;
+            border-radius: 5px;
+            outline: 0;
+            color: #f1f1f1;
+        }
+        #newGroupButton:hover {
+            background-color: #d32737;
+        }
+
+        #newGroupButton:active {
+            box-shadow: 0 1px 0 #8b1f23;
+            bottom: -49px;
+        }
+
+        #newGroupButton span{
             font-size: 1.0em;
             padding-right: 0.3em;
         }
@@ -166,12 +192,21 @@
             background-color: rgb(255, 224, 190);
             border-radius: 4px;
         }
+
+        .groupName {
+            margin-left: 2em;
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 
 <body>
 <div class="header">
     Links List
+    <button id="newGroupButton">
+        <span class="glyphicon glyphicon-plus"></span>New Group
+    </button>
     <button id="emailButton">
         <span class="glyphicon glyphicon-envelope"></span>Email Links
     </button>

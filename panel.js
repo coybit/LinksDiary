@@ -30,9 +30,14 @@ parseUri.options = {
 
 var clip;
 
-function setListBody(queue) {
+function setListBody( queue, isLoggedin ) {
 
 	$('#listbody').html('')
+
+    if( isLoggedin == false ) {
+        alert('Please login first')
+        return;
+    }
 
     for( var i=0; i<queue.length;i++){
 
@@ -50,9 +55,12 @@ function setListBody(queue) {
             .attr('href',queue[i].url)
             .text(queue[i].title)
 
+        var group = $('<span>').addClass('groupName').text( queue[i].group );
+
         var title = $('<div>')
             .append(favicon)
             .append(name)
+            .append(group)
             .append(category)
 
 		var header = $('<div>').addClass('itemHeader')
@@ -128,6 +136,13 @@ function setListBody(queue) {
 
         $('#clearButton').click( function() {
             chrome.extension.sendMessage({directive: "panel-clearButton-click"});
+        });
+
+        $('#newGroupButton').click( function() {
+            var groupName = prompt('Enter a name for group:');
+
+            if( groupName != null )
+                chrome.extension.sendMessage({directive: "addNewGroup", groupName: groupName});
         });
 
 	}

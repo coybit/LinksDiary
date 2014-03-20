@@ -74,3 +74,14 @@ function initPopup(newTitle,favIconUrl,categories,isLoggedin) {
         $('#link-category').append( option );
     }
 }
+
+function setGroupsList( groups, isLoggedin ) {
+
+    for( var i=0; i<groups.length; i++ ) {
+
+        var option = $('<option>').text(groups[i].name);
+        $('#group').append( option );
+
+    }
+
+}

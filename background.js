@@ -177,6 +177,8 @@ var LinkDiary = function() {
 
     this.fillPopupInfo = function() {
 
+        var isLoggedIn = (serverToken?true:false);
+
         chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
             var categories = [
@@ -191,27 +193,33 @@ var LinkDiary = function() {
                 arrayOfTabs[0].title,
                 arrayOfTabs[0].favIconUrl,
                 categories,
-                (serverToken?true:false)
-            );
+                isLoggedIn);
 
+        });
+
+        // Groups
+        this.getGroups( function(groups) {
+            getView('popup.html').setGroupsList( groups, isLoggedIn );
         });
 
     }
 
     this.fillPanelInfo = function() {
 
+        var isLoggedIn = (serverToken?true:false);
+
+        // Links
         chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
 
             chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
                 var queue = results.linkDiaryQueue || [];
-                getView('panel.html').setListBody( queue );
+                getView('panel.html').setListBody( queue, isLoggedIn );
 
             });
 
         });
-
-    }
+    };
 
     this.openPanel = function() {
         var panelURL = chrome.extension.getURL('panel.html');
@@ -283,6 +291,28 @@ var LinkDiary = function() {
             serverToken = result.linkDiaryUser = null;
 
             chrome.storage.sync.set( { 'linkDiaryUser': result.linkDiaryUser } );
+        });
+    }
+
+    this.addGroup = function( groupName ) {
+
+        var  loadUrl = 'http://localhost:3000/groups';
+
+        $.post(loadUrl, {
+            groupName: groupName,
+            ownerServerToken: serverToken
+        }).done( function( res ){
+            // Reload groups list
+            console.log( res );
+        });
+    }
+
+    this.getGroups = function( callback ) {
+
+        var  loadUrl = 'http://localhost:3000/groups';
+
+        $.get(loadUrl, { ownerServerToken: serverToken }).done( function( qroups ){
+                callback( qroups );
         });
     }
 
@@ -359,17 +389,17 @@ var LinkDiary = function() {
 
 };
 
-var linkDiary = new LinkDiary();
-
-linkDiary.login(function(){
-
+function sync() {
     linkDiary.SaveAllToServer( function() {
         linkDiary.LoadFromServer( 'public', function() {
             linkDiary.initBadgetText();
         })
     });
+}
 
-});
+var linkDiary = new LinkDiary();
+
+linkDiary.login( sync );
 
 
 
@@ -379,12 +409,22 @@ chrome.extension.onMessage.addListener(
         switch (request.directive) {
 
             case "login":
-                linkDiary.login();
+                linkDiary.login( sync );
                 sendResponse({}); // sending back empty response to sender
                 break;
 
             case "logout":
                 linkDiary.logout();
+                sendResponse({}); // sending back empty response to sender
+                break;
+
+            case "addNewGroup":
+                linkDiary.addGroup( request.groupName );
+                sendResponse({}); // sending back empty response to sender
+                break;
+
+            case "getGroupsList":
+                linkDiary.getGroups();
                 sendResponse({}); // sending back empty response to sender
                 break;
 
