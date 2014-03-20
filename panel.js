@@ -145,6 +145,13 @@ function setListBody( queue, isLoggedin ) {
                 chrome.extension.sendMessage({directive: "addNewGroup", groupName: groupName});
         });
 
+        $('#joinGroupButton').click( function() {
+            var groupName = prompt('Enter name of group that you want to join:');
+
+            if( groupName != null )
+                chrome.extension.sendMessage({directive: "joinToGroup", groupName: groupName});
+        });
+
 	}
   //document.getElementById('listbody').innerHTML = listBody;
 

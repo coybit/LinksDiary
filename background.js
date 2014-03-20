@@ -307,6 +307,18 @@ var LinkDiary = function() {
         });
     }
 
+    this.joinToGroup = function( groupName ) {
+
+        var  loadUrl = 'http://localhost:3000/groups/join';
+
+        $.post(loadUrl, {
+            groupName: groupName,
+            ownerServerToken: serverToken
+        }).done( function( res ){
+                alert( res.message )
+            });
+    }
+
     this.getGroups = function( callback ) {
 
         var  loadUrl = 'http://localhost:3000/groups';
@@ -420,6 +432,11 @@ chrome.extension.onMessage.addListener(
 
             case "addNewGroup":
                 linkDiary.addGroup( request.groupName );
+                sendResponse({}); // sending back empty response to sender
+                break;
+
+            case "joinToGroup":
+                linkDiary.joinToGroup( request.groupName );
                 sendResponse({}); // sending back empty response to sender
                 break;
 

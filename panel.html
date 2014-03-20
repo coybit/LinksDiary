@@ -165,13 +165,41 @@
         #newGroupButton:hover {
             background-color: #d32737;
         }
-
         #newGroupButton:active {
             box-shadow: 0 1px 0 #8b1f23;
             bottom: -49px;
         }
-
         #newGroupButton span{
+            font-size: 1.0em;
+            padding-right: 0.3em;
+        }
+
+
+        #joinGroupButton {
+            position: absolute;
+            left: 11em;
+            bottom: -45px;
+            font-size: 0.4em;
+            line-height: 1.5em;
+            font-weight: 700;
+            background-color: #bb2632;
+            padding: 0.5em 1em;
+            box-shadow: 0 3px 0 #8b1f23;
+            border: 0;
+            border-radius: 5px;
+            outline: 0;
+            color: #f1f1f1;
+        }
+        #joinGroupButton:hover {
+            background-color: #d32737;
+        }
+
+        #joinGroupButton:active {
+            box-shadow: 0 1px 0 #8b1f23;
+            bottom: -49px;
+        }
+
+        #joinGroupButton span{
             font-size: 1.0em;
             padding-right: 0.3em;
         }
@@ -207,6 +235,10 @@
     <button id="newGroupButton">
         <span class="glyphicon glyphicon-plus"></span>New Group
     </button>
+    <button id="joinGroupButton">
+        <span class="glyphicon glyphicon-cloud"></span>Join a Group
+    </button>
+
     <button id="emailButton">
         <span class="glyphicon glyphicon-envelope"></span>Email Links
     </button>
