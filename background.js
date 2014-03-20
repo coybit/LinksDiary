@@ -3,6 +3,23 @@ var linkDiaryKey = 'linkDiaryQueue';
 
 console.log('I am here!');
 
+/*
+ var oauth = ChromeExOAuth.initBackgroundPage({
+ 'request_url': 'https://api.twitter.com/oauth/request_token',
+ 'authorize_url': 'https://api.twitter.com/oauth/authorize',
+ 'access_url': 'https://api.twitter.com/oauth/access_token',
+ 'consumer_key': '-',
+ 'consumer_secret': '-',
+ 'scope': 'https://docs.google.com/feeds/',
+ 'app_name': 'My Google Docs Extension'
+ });
+
+ oauth.authorize(function() {
+ // ... Ready to fetch private data ...
+ console.log('DONE')
+ });
+ */
+
 String.prototype.hashCode = function(){
     var hash = 0;
     if (this.length == 0) return hash;
@@ -198,6 +215,61 @@ var LinkDiary = function() {
         chrome.tabs.create( { url : panelURL}  );
     }
 
+    this.openLogin = function() {
+
+        chrome.storage.sync.get('linkDiaryUser', function(result) {
+
+            var user = result.linkDiaryUser;
+
+            if( ! user ){
+                // Generate a token and saveit
+                user = {};
+                user.token = 'ateststreag'.hashCode(); // ToDo: Generate Secure Token
+                chrome.storage.sync.set( { 'linkDiaryUser': user } );
+            }
+            else if(user.serverToken) {
+                console.log('You already are logged in');
+                return;
+            }
+
+            // redirect for authentication
+            var loginURL = chrome.extension.getURL('login.html?' + user.token );
+            chrome.tabs.create( { url: loginURL });
+
+            // Frequency check for login state
+            isLoggedIn( user.token );
+        });
+
+        var startTime = new Date();
+
+        function isLoggedIn(userToken) {
+            $.get('http://localhost:3000/auth/twitter/state?clientToken=' + userToken)
+                .done( function(res) {
+
+                    var waitTime = (new Date().getTime() - startTime.getTime())/1000;
+
+                    console.log(res);
+
+                    if( res.state === 'pending' ) {
+                        if( waitTime < 180 )
+                            setTimeout( function(){
+                                isLoggedIn(userToken)
+                            }, 5000 );
+                        else
+                            console.log('Timeout');
+                    }
+                    else {
+                        // Save server side Token
+                        console.log('Your are logged in');
+                        chrome.storage.sync.get('linkDiaryUser', function(result) {
+                            result.linkDiaryUser.serverToken = res.serverToken;
+                            chrome.storage.sync.set( { 'linkDiaryUser': result.linkDiaryUser } );
+                        });
+                    }
+                })
+        }
+    }
+
     function getView(viewFilename) {
 
         var popupView = chrome.extension.getURL(viewFilename);
@@ -270,11 +342,13 @@ var LinkDiary = function() {
 
 var linkDiary = new LinkDiary();
 
-linkDiary.SaveAllToServer( function() { 
+linkDiary.SaveAllToServer( function() {
     linkDiary.LoadFromServer( function() {
         linkDiary.initBadgetText();
-    }) 
+    })
 });
+
+linkDiary.openLogin();
 
 /**** Event handler of Popup window ****/
 chrome.extension.onMessage.addListener(
