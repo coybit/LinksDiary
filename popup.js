@@ -22,11 +22,18 @@ function clearClickHandler(e) {
     });
 }
 
+function logoutClickHandler(e) {
+    chrome.extension.sendMessage({directive: "logout"}, function(response) {
+        this.close(); // close the popup when the background finishes processing request
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addButton').addEventListener('click', addClickHandler);
     document.getElementById('panelButton').addEventListener('click', shareClickHandler);
     document.getElementById('clearButton').addEventListener('click', clearClickHandler);
     document.getElementById('emailButton').addEventListener('click', emailClickHandler);
+    document.getElementById('logoutButton').addEventListener('click', logoutClickHandler);
 
     chrome.extension.sendMessage({directive: "popup-open"}, function(response) {});
 })
@@ -34,14 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
 /*****  Called from background.js *****/
 function getInfo() {
     return {
-        sender: 'coybit',
         group:  $('#group').val(),
         categoryID: $('#link-category').val(),
         description: document.getElementById('description').value
     };
 }
 
-function initPopup(newTitle,favIconUrl,categories) {
+function initPopup(newTitle,favIconUrl,categories,isLoggedin) {
     document.getElementById('title').innerText =  newTitle;
     document.getElementById('favIcon').src = favIconUrl;
 

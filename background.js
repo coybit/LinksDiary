@@ -35,6 +35,7 @@ String.prototype.hashCode = function(){
 var LinkDiary = function() {
 
     var storageKey = 'linkdiary';
+    var serverToken;
 
     this.addToQueue = function() {
 
@@ -50,6 +51,7 @@ var LinkDiary = function() {
                 url: activeTab.url,
                 description: info.description,
                 category: info.categoryID,
+                group: info.group,
                 favIcon: activeTab.favIconUrl,
                 hashedURL: activeTab.url.hashCode()
             };
@@ -188,7 +190,8 @@ var LinkDiary = function() {
             getView('popup.html').initPopup(
                 arrayOfTabs[0].title,
                 arrayOfTabs[0].favIconUrl,
-                categories
+                categories,
+                (serverToken?true:false)
             );
 
         });
@@ -215,7 +218,7 @@ var LinkDiary = function() {
         chrome.tabs.create( { url : panelURL}  );
     }
 
-    this.openLogin = function() {
+    this.login = function(callback) {
 
         chrome.storage.sync.get('linkDiaryUser', function(result) {
 
@@ -229,6 +232,8 @@ var LinkDiary = function() {
             }
             else if(user.serverToken) {
                 console.log('You already are logged in');
+                serverToken = user.serverToken;
+                callback();
                 return;
             }
 
@@ -256,18 +261,28 @@ var LinkDiary = function() {
                                 isLoggedIn(userToken)
                             }, 5000 );
                         else
-                            console.log('Timeout');
+                            //console.log('Timeout');
+                            callback();
                     }
                     else {
                         // Save server side Token
                         console.log('Your are logged in');
                         chrome.storage.sync.get('linkDiaryUser', function(result) {
                             result.linkDiaryUser.serverToken = res.serverToken;
+                            serverToken = res.serverToken;
                             chrome.storage.sync.set( { 'linkDiaryUser': result.linkDiaryUser } );
                         });
+                        callback();
                     }
                 })
         }
+    }
+
+    this.logout = function() {
+        chrome.storage.sync.get('linkDiaryUser', function(result) {
+            result.linkDiaryUser = null;
+            chrome.storage.sync.set( { 'linkDiaryUser': result.linkDiaryUser } );
+        });
     }
 
     function getView(viewFilename) {
@@ -290,7 +305,7 @@ var LinkDiary = function() {
 
             var queue = results.linkDiaryQueue || [];
 
-            // Check wheter it is new or not
+            // Check whether it is new or not
             for( var i=0; i<queue.length; i++ ) {
                 if( queue[i].url == webpage.url )
                     return;
@@ -306,9 +321,8 @@ var LinkDiary = function() {
         });
     }
 
-    this.LoadFromServer = function(callback) {
-        //var  loadUrl = 'http://localhost:3000/links/darchin/coybit';
-        var  loadUrl = 'http://linksDiary.herokuapp.com/links/darchin/coybit';
+    this.LoadFromServer = function(group, callback) {
+        var  loadUrl = 'http://localhost:3000/links/'  + group.toLowerCase() + '/' + serverToken;
 
         $.get(loadUrl).done( function(serverQueue){
             chrome.storage.sync.set({'linkDiaryQueue':serverQueue.links});
@@ -322,11 +336,15 @@ var LinkDiary = function() {
             chrome.storage.sync.get('linkDiaryQueue', function(results) {
 
                 var queue = results.linkDiaryQueue || [];
-                //var  saveUrl = 'http://localhost:3000/links/darchin/coybit';
-                var  saveUrl = 'http://linksDiary.herokuapp.com//links/darchin/coybit';
                 var responsCount = 0;
 
+                if( queue.length == 0 )
+                    callback();
+
                 for( var i=0; i<queue.length; i++ ){
+
+                    var  saveUrl = 'http://localhost:3000/links/' + queue[i].group.toLowerCase() + '/' + serverToken;
+
                     $.post(saveUrl, {link: queue[i] }).done( function(){
                         responsCount++;
                         if( responsCount==queue.length)
@@ -342,18 +360,27 @@ var LinkDiary = function() {
 
 var linkDiary = new LinkDiary();
 
-linkDiary.SaveAllToServer( function() {
-    linkDiary.LoadFromServer( function() {
-        linkDiary.initBadgetText();
-    })
+linkDiary.login(function(){
+
+    linkDiary.SaveAllToServer( function() {
+        linkDiary.LoadFromServer( 'public', function() {
+            linkDiary.initBadgetText();
+        })
+    });
+
 });
 
-linkDiary.openLogin();
+
 
 /**** Event handler of Popup window ****/
 chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
         switch (request.directive) {
+
+            case "logout":
+                linkDiary.logout();
+                sendResponse({}); // sending back empty response to sender
+                break;
 
             case "panel-open":
                 linkDiary.fillPanelInfo();
