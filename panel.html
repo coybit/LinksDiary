@@ -7,7 +7,10 @@
 
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link href="/css/bootstrap.glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jquery-ui.css">
     <script src='js/jquery-1.11.0.min.js'></script>
+    <script src="js/jquery-ui.js"></script>
+
     <script src="panel.js"></script>
     <style>
         body {
@@ -54,10 +57,17 @@
 
         .itemHost {
             display: inline-block;
+            margin-left: 1em;
         }
 
         .itemCopy {
             cursor: pointer;
+            margin: 0 0.3em;
+        }
+
+        .itemTweet {
+            cursor: pointer;
+            margin: 0 0.3em;
         }
 
         .itemFooter {
@@ -147,62 +157,33 @@
             padding-right: 0.3em;
         }
 
-        #newGroupButton {
+        #groupManagerButton {
             position: absolute;
             left: 1em;
             bottom: -45px;
             font-size: 0.4em;
             line-height: 1.5em;
             font-weight: 700;
-            background-color: #bb2632;
+            background-color: #6fbb61;
             padding: 0.5em 1em;
-            box-shadow: 0 3px 0 #8b1f23;
+            box-shadow: 0 3px 0 #4f8a45;
             border: 0;
             border-radius: 5px;
             outline: 0;
             color: #f1f1f1;
         }
-        #newGroupButton:hover {
-            background-color: #d32737;
+        #groupManagerButton:hover {
+            background-color: #7fdd6f;
         }
-        #newGroupButton:active {
-            box-shadow: 0 1px 0 #8b1f23;
+        #groupManagerButton:active {
+            box-shadow: 0 1px 0 #4f8a45;
             bottom: -49px;
         }
-        #newGroupButton span{
+        #groupManagerButton span{
             font-size: 1.0em;
             padding-right: 0.3em;
         }
 
-
-        #joinGroupButton {
-            position: absolute;
-            left: 11em;
-            bottom: -45px;
-            font-size: 0.4em;
-            line-height: 1.5em;
-            font-weight: 700;
-            background-color: #bb2632;
-            padding: 0.5em 1em;
-            box-shadow: 0 3px 0 #8b1f23;
-            border: 0;
-            border-radius: 5px;
-            outline: 0;
-            color: #f1f1f1;
-        }
-        #joinGroupButton:hover {
-            background-color: #d32737;
-        }
-
-        #joinGroupButton:active {
-            box-shadow: 0 1px 0 #8b1f23;
-            bottom: -49px;
-        }
-
-        #joinGroupButton span{
-            font-size: 1.0em;
-            padding-right: 0.3em;
-        }
 
         .itemHeader button {
             float: right;
@@ -222,8 +203,7 @@
         }
 
         .groupName {
-            margin-left: 2em;
-            text-decoration: underline;
+            margin-left: 24px;
         }
 
     </style>
@@ -232,11 +212,8 @@
 <body>
 <div class="header">
     Links List
-    <button id="newGroupButton">
-        <span class="glyphicon glyphicon-plus"></span>New Group
-    </button>
-    <button id="joinGroupButton">
-        <span class="glyphicon glyphicon-cloud"></span>Join a Group
+    <button id="groupManagerButton">
+        <span class="glyphicon glyphicon-plus"></span>Group Manager
     </button>
 
     <button id="emailButton">
@@ -250,5 +227,26 @@
 <div id="listbody">
     Please open just one panel tab!
 </div>
+
+<div id="groupDialog" title="Groups Manager">
+    <p>
+        <input type="text" id="newGroupName" placeholder="Enter New Group Name">
+        <button id="createGroupButton">Create</button>
+    </p>
+    <hr>
+    <p>
+        <input type="text" id="joinGroupName" placeholder="Enter a group name to join">
+        <button id="joinGroupButton">Join</button>
+    </p>
+    <hr>
+    <p>
+        <select id="inviteGroupName" >
+            <option>Group #1</option>
+        </select>
+        <input type="email" id="invitedEmail" placeholder="Enter invited email address">
+        <button>Invite</button>
+    </p>
+</div>
+
 </body>
 </html>
