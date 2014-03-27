@@ -148,11 +148,12 @@ function setListBody( queue, isLoggedin ) {
 
     $('#groupManagerButton').click( function() {
         $("#groupDialog").dialog("open");
+
+        // Fill Groups List
     });
 
     $(".itemCopy").click(function(){
         var txt = '*' + $(this).attr('title') + '*  (' + $(this).attr('url') + ')';
-
         prompt ("Copy link, then click OK.", txt);
     });
 
@@ -171,6 +172,17 @@ function setListBody( queue, isLoggedin ) {
     });
 
     console.log( chromeExOAuth.hasToken() );
+}
+
+function setGroupsList( groups, isLoggedin ) {
+
+    for( var i=0; i<groups.length; i++ ) {
+
+        var option = $('<option>').text(groups[i].name);
+        $('#inviteGroupName').append( option );
+
+    }
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {

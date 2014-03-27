@@ -215,9 +215,13 @@ var LinkDiary = function() {
 
                 var queue = results.linkDiaryQueue || [];
                 getView('panel.html').setListBody( queue, isLoggedIn );
-
             });
 
+        });
+
+        // Groups
+        this.getGroups( function(groups) {
+            getView('panel.html').setGroupsList( groups, isLoggedIn );
         });
     };
 
@@ -317,6 +321,10 @@ var LinkDiary = function() {
         }).done( function( res ){
                 alert( res.message )
             });
+    }
+
+    this.inviteToGroup = function( groupName, email ) {
+        // ToDo: Send invitation email
     }
 
     this.getGroups = function( callback ) {
