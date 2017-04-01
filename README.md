@@ -1,3 +1,5 @@
+<img src="https://github.com/coybit/LinksDiary/raw/master/icons/icon128.png"/>
+
 LinksDiary
 ==========
 
